@@ -1,8 +1,7 @@
 <?php
+// Include the database connection (gets $db)
 require_once 'config/database.php';
 require_once 'includes/header.php';
-
-$db = (new Database())->getConnection();
 
 // Build query based on filters and sorting
 $search = isset($_GET['search']) ? '%' . trim($_GET['search']) . '%' : '%';

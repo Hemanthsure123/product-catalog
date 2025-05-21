@@ -1,18 +1,19 @@
 <?php
+// Include the database connection (gets $db)
 require_once 'config/database.php';
 require_once 'includes/header.php';
 
-$db = (new Database())->getConnection();
-
-// Build query based on filters and sorting, fixed to Washing Machines category
+// Use $db directly (no Database class needed)
 $search = isset($_GET['search']) ? '%' . trim($_GET['search']) . '%' : '%';
 $min_price = isset($_GET['min_price']) && is_numeric($_GET['min_price']) ? floatval($_GET['min_price']) : 0;
 $max_price = isset($_GET['max_price']) && is_numeric($_GET['max_price']) ? floatval($_GET['max_price']) : PHP_INT_MAX;
 $sort = isset($_GET['sort']) ? trim($_GET['sort']) : 'name_asc';
 
+// Build query to get Washing Machines only
 $query = "SELECT * FROM products WHERE name LIKE ? AND category = 'Washing Machines' AND price >= ? AND price <= ?";
 $params = [$search, $min_price, $max_price];
 
+// Add sorting
 switch ($sort) {
     case 'name_asc':
         $query .= " ORDER BY name ASC";
@@ -36,6 +37,7 @@ switch ($sort) {
         $query .= " ORDER BY name ASC";
 }
 
+// Run the query
 $stmt = $db->prepare($query);
 $stmt->execute($params);
 $products = $stmt->fetchAll();
